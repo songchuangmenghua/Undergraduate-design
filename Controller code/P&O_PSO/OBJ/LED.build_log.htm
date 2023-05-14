@@ -1,0 +1,158 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¶ÃVision V5.21.1.0
+Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Fu Wenqi, AQUAkennsha, LIC=RC93N-YIMWJ-DYUV3-AVXIV-N00QR-V1NX4
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.21a
+Toolchain Path:  D:\miuvision\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 3 (build 300)
+Assembler:       Armasm.exe V5.06 update 3 (build 300)
+Linker/Locator:  ArmLink.exe V5.06 update 3 (build 300)
+Library Manager: ArmAr.exe V5.06 update 3 (build 300)
+Hex Converter:   FromElf.exe V5.06 update 3 (build 300)
+CPU DLL:         SARMCM3.DLL V5.21a
+Dialog DLL:      DCM.DLL V1.13.8.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
+Dialog DLL:      TCM.DLL V1.14.14.0
+ 
+<h2>Project:</h2>
+e:\Innovation and Entrepreneurship\Research on online control method of optimal power output for pure solar UAV\code\exp5all\Exp5test_liziqun4\USER\PV_B.uvprojx
+Project File Date:  03/08/2023
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 3 (build 300)', folder: 'D:\miuvision\ARM\ARMCC\Bin'
+Rebuild target 'PVB'
+assembling startup_stm32f767xx.s...
+compiling main.c...
+..\HARDWARE\ACC\acc.h(41): warning:  #1295-D: Deprecated declaration initialize_val - give arg types
+  void initialize_val(); //Âà?Âß?Âå?Âè?Èá?
+..\HARDWARE\ACC\acc.h(43): warning:  #1295-D: Deprecated declaration get_P - give arg types
+  float get_P();		   //Ëé?Âè?Áî?Âé?Áî?Êµ?Ôº?ËÆ?ÁÆ?Âä?Áé?
+main.c(25): error:  #268: declaration may not appear after executable statement in block
+  	u8 key;
+main.c(27): error:  #268: declaration may not appear after executable statement in block
+  	float TIM3_dt = 1, TIM2_dt = 0.5;
+main.c(28): error:  #268: declaration may not appear after executable statement in block
+  	double TIM3_tim = 0, TIM2_tim = 0;
+main.c(29): error:  #268: declaration may not appear after executable statement in block
+  	u32 n3 = 0, n2 = 0;
+main.c(30): error:  #268: declaration may not appear after executable statement in block
+  	u32 t = 1000;
+main.c(31): error:  #268: declaration may not appear after executable statement in block
+  	u32 t1 = 0;
+main.c(32): error:  #268: declaration may not appear after executable statement in block
+  	int cnt;
+main.c(33): error:  #268: declaration may not appear after executable statement in block
+  	float Voltage = 0;
+main.c(34): error:  #268: declaration may not appear after executable statement in block
+  	float Current;
+main.c(35): error:  #268: declaration may not appear after executable statement in block
+  	float Power1;
+main.c(36): error:  #268: declaration may not appear after executable statement in block
+  	u16 ThrottleDuty = 0;
+main.c(84): warning:  #177-D: variable "temp" was declared but never referenced
+  							u16 temp;
+main.c(27): warning:  #177-D: variable "TIM3_dt" was declared but never referenced
+  	float TIM3_dt = 1, TIM2_dt = 0.5;
+main.c(28): warning:  #177-D: variable "TIM3_tim" was declared but never referenced
+  	double TIM3_tim = 0, TIM2_tim = 0;
+main.c(29): warning:  #177-D: variable "n3" was declared but never referenced
+  	u32 n3 = 0, n2 = 0;
+main.c(31): warning:  #177-D: variable "t1" was declared but never referenced
+  	u32 t1 = 0;
+main.c(33): warning:  #177-D: variable "Voltage" was declared but never referenced
+  	float Voltage = 0;
+main.c(34): warning:  #177-D: variable "Current" was declared but never referenced
+  	float Current;
+main.c(35): warning:  #177-D: variable "Power1" was declared but never referenced
+  	float Power1;
+main.c(36): warning:  #177-D: variable "ThrottleDuty" was declared but never referenced
+  	u16 ThrottleDuty = 0;
+main.c: 11 warnings, 11 errors
+compiling system_stm32f7xx.c...
+compiling stm32f7xx_hal_pwr.c...
+compiling stm32f7xx_it.c...
+compiling stm32f7xx_hal_gpio.c...
+compiling usart.c...
+compiling stm32f7xx_hal_cortex.c...
+compiling delay.c...
+compiling sys.c...
+compiling stm32f7xx_hal_pwr_ex.c...
+compiling stm32f7xx_hal.c...
+compiling stm32f7xx_hal_cec.c...
+compiling stm32f7xx_hal_dma.c...
+compiling stm32f7xx_hal_can.c...
+compiling stm32f7xx_hal_adc.c...
+compiling stm32f7xx_hal_usart.c...
+compiling stm32f7xx_hal_rcc.c...
+compiling stm32f7xx_hal_uart.c...
+compiling stm32f7xx_hal_tim_ex.c...
+compiling stm32f7xx_hal_dma_ex.c...
+compiling stm32f7xx_hal_rcc_ex.c...
+compiling stm32f7xx_hal_tim.c...
+compiling stm32f7xx_hal_adc_ex.c...
+compiling stm32f7xx_hal_ltdc.c...
+compiling stm32f7xx_hal_dac.c...
+compiling stm32f7xx_hal_ltdc_ex.c...
+compiling stm32f7xx_ll_fmc.c...
+compiling stm32f7xx_hal_dac_ex.c...
+compiling stm32f7xx_hal_sram.c...
+compiling stm32f7xx_hal_sdram.c...
+compiling stm32f7xx_ll_usb.c...
+compiling led.c...
+compiling stm32f7xx_hal_spi.c...
+compiling hil.c...
+compiling irr.c...
+..\HARDWARE\IRR\irr.c(35): warning:  #177-D: variable "i" was declared but never referenced
+  	int i;
+..\HARDWARE\IRR\irr.c: 1 warning, 0 errors
+compiling adc.c...
+..\HARDWARE\ADC\adc.c(52): warning:  #177-D: variable "temp" was declared but never referenced
+  		u16 temp;
+..\HARDWARE\ADC\adc.c: 1 warning, 0 errors
+compiling can.c...
+..\HARDWARE\CAN\can.c(162): warning:  #550-D: variable "res" was set but never used
+  	u8 res;
+..\HARDWARE\CAN\can.c(209): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			Data_CAN->Current_out_DC=(float)DC_out_I*0.1;
+..\HARDWARE\CAN\can.c(210): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			Data_CAN->Current_in_DC=(float)DC_in_I*0.1;
+..\HARDWARE\CAN\can.c(217): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			Data_CAN->Voltage_in_DC=(float)DC_in_U*0.01;
+..\HARDWARE\CAN\can.c(218): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			Data_CAN->Voltage_out_DC=(float)DC_out_U*0.01;
+..\HARDWARE\CAN\can.c(219): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			Data_CAN->Temp_DC=(float)DC_Temp*0.1;
+..\HARDWARE\CAN\can.c: 6 warnings, 0 errors
+compiling ltdc.c...
+compiling dac.c...
+compiling spi.c...
+compiling acc.c...
+..\HARDWARE\ACC\acc.h(41): warning:  #1295-D: Deprecated declaration initialize_val - give arg types
+  void initialize_val(); //Âà?Âß?Âå?Âè?Èá?
+..\HARDWARE\ACC\acc.h(43): warning:  #1295-D: Deprecated declaration get_P - give arg types
+  float get_P();		   //Ëé?Âè?Áî?Âé?Áî?Êµ?Ôº?ËÆ?ÁÆ?Âä?Áé?
+..\HARDWARE\ACC\acc.c(46): warning:  #68-D: integer conversion resulted in a change of sign
+      TO.delta_accelerator_min = -5;
+..\HARDWARE\ACC\acc.c: 3 warnings, 0 errors
+compiling sdram.c...
+compiling timer.c...
+compiling lcd.c...
+compiling key.c...
+"..\OBJ\LED.axf" - 11 Error(s), 22 Warning(s).
+
+<h2>Collection of Component include folders:</h2>
+  e:\Innovation and Entrepreneurship\Research on online control method of optimal power output for pure solar UAV\code\exp5all\Exp5test_liziqun4\USER\RTE
+  D:\miuvision\ARM\PACK\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include
+
+<h2>Collection of Component Files used:</h2>
+Target not created.
+Build Time Elapsed:  00:00:36
+</pre>
+</body>
+</html>

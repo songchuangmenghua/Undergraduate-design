@@ -1,0 +1,5 @@
+Load "..\\OBJ\\LED.axf" 
+_____^
+*** error 56: cannot open file
+Error: Flash Download failed  -  Could not load file '..\OBJ\LED.axf'
+Flash Load finished at 16:47:10

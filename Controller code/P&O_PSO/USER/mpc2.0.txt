@@ -1,0 +1,378 @@
+#include "sys.h"
+#include "delay.h"
+#include "usart.h"
+#include "led.h"
+#include "qpOASES_e.h"
+#include "MPC.h"
+/************************************************
+ ALIENTEK 阿波罗STM32F7开发板 实验1
+ 跑马灯实验-HAL库版本
+ 技术支持：www.openedv.com
+ 淘宝店铺：http://eboard.taobao.com 
+ 关注微信公众平台微信号："正点原子"，免费获取STM32资料。
+ 广州市星翼电子科技有限公司  
+ 作者：正点原子 @ALIENTEK
+************************************************/
+
+#define Np 8
+#define Nc 3
+#define MAX 50
+#define cBCS 2
+#define lACS 2
+#define cACS 2
+#define lBCS 2
+#define cBP 1
+#define lBP 2
+#define cYCS 2
+int main(void)
+{
+	/* Setup data of first QP. */
+//	real_t H[2*2] = { 1.0, 0.0, 0.0, 0.5 };
+//	real_t A[1*2] = { 1.0, 1.0 };
+//	real_t g[2] = { 1.5, 1.0 };
+//	real_t lb[2] = { 0.5, -2.0 };
+//	real_t ub[2] = { 5.0, 2.0 };
+//	real_t lbA[1] = { -1.0 };
+//	real_t ubA[1] = { 2.0 };
+
+//	/* Setup data of second QP. */
+//	real_t g_new[2] = { 1.0, 1.5 };
+//	real_t lb_new[2] = { 0.0, -1.0 };
+//	real_t ub_new[2] = { 5.0, -0.5 };
+//	real_t lbA_new[1] = { -2.0 };
+//	real_t ubA_new[1] = { 1.0 };
+
+
+	/* Setting up QProblem object. */
+//		static Options options;
+//		static QProblem example;
+//	
+//		int nWSR;
+//		real_t xOpt[2];
+
+	float Q=5.3,SOCr=0.85;
+	float deltPfcUpper=150,	deltPfcLow=-150,	deltPbUpper=1000,  deltPbLow=-1000;
+	float PfcUpper=600,  PfcLow=0,	PbUpper=1000,  PbLow=-200;
+	float SOCH=1,     SOCL=0.4, CH=50, CL=-50;
+	const float a=0.0095;
+	const float p_batPSOC[3]={0.01997,0.01102,-0.0114};
+	const float	w1=5, w2=10, w3=1, w4=0.5;
+	float h,k,	miu=0.1;
+	float ycs[MAX][MAX]={0},u[MAX][MAX]={0},ACS[MAX][MAX]={0},BCS[MAX][MAX]={0};
+  float  BP[MAX][MAX]={1,1};
+	float W2[MAX][MAX]={0},W3[MAX][MAX]={0},W4[MAX][MAX]={0};
+//	float GP[MAX][MAX]={0},GCS[MAX][MAX]={0};
+//	float FCS[MAX][MAX]={0};
+//	float PhiP[MAX][MAX]={0};
+//	float PhiP_T[MAX][MAX]={0},PhiCS[MAX][MAX]={0},PhiCS_T[MAX][MAX]={0};
+	float SOCR[MAX][MAX]={0},ec[MAX][MAX]={w1,0},Ec[MAX][MAX]={0},Ec_T[MAX][MAX]={0},PR[MAX][MAX]={0};
+//	float E[MAX][MAX]={0},deltUB[MAX][MAX]={0},deltLB[MAX][MAX]={0},UB[MAX][MAX]={0},LB[MAX][MAX]={0};
+//	float U[MAX][MAX]={0},YUB[MAX][MAX]={0},YLB[MAX][MAX]={0},EUU[MAX][MAX]={0};
+//	float LB_U[MAX][MAX]={0},UB_U[MAX][MAX]={0},PhiCS_LB[MAX][MAX]={0},PhiCS_UB[MAX][MAX]={0};
+//	float H[MAX][MAX]={0},H1[MAX][MAX]={0},H2[MAX][MAX]={0},H_cal[lBCS*Nc*lBCS*Nc]={0},f[MAX][MAX]={0},f1[MAX][MAX]={0},f_cal[lBCS*Nc]={0};
+//	float LB_cal[lBP*Nc]={0},UB_cal[lBP*Nc]={0},lbA_cal[lBP*Nc+cACS*Np]={0},ubA_cal[lBP*Nc+cACS*Np]={0},A_cal[(lBP*Nc+cACS*Np)*lBP*Nc]={0};
+//	float FCSycs[MAX][MAX]={0},GCSu[MAX][MAX]={0},GPu[MAX][MAX]={0},temp[MAX][MAX]={0},temp2[MAX][MAX]={0},temp3[MAX][MAX]={0};
+	float dt=0.1,Ubus=24,SOC=1,Cehc=0,Pfc=10,Pb=20,Pd=100;
+	float ret=0;
+	u8 i=0,j=0,kk=0;
+	
+    Cache_Enable();                 //打开L1-Cache
+    HAL_Init();				        //初始化HAL库
+    Stm32_Clock_Init(432,25,2,9);   //设置时钟,216Mhz 
+    delay_init(216);                //延时初始化
+		uart_init(115200);
+		LED_Init();
+	
+	
+//	h=dt/3600/Q/Ubus;
+//	k=1-2*miu*(SOC-0.5*(SOCH+SOCL))/(SOCH-SOCL);
+//	ycs[0][0]=Cehc,ycs[1][0]=SOC;
+//	u[0][0]=Pfc,u[1][0]=Pb;
+//	ACS[0][1]=p_batPSOC[2];
+//	ACS[1][1]=1;
+//	BCS[0][0]=a;
+//	BCS[0][1]=p_batPSOC[1];
+//	BCS[1][1]=-k*h;
+//	for (i=0;i<Np;i++)
+//	{
+//		W2[cYCS*i+1][cYCS*i+1]=w2;
+//		SOCR[cYCS*i][0]=SOCr;
+//		Ec[0][cYCS*i]=w1*0.5;
+//		PR[i][0]=Pd;
+//		W3[i][i]=w3;
+//	}
+//	for(i=0;i<lBP*Nc;i=i+lBP)
+//	{
+//		W4[i][i]=w4;
+//	}
+//	if(cACS ==cBCS && lACS == lBCS)
+//	{
+//	for (i=1;i<=Np;i++)
+//	{
+//		for (j=0;j<cACS;j++)
+//		{
+//			for (kk=0;kk<lACS;kk++)
+//			{
+//				FCS[(i-1)*cACS+j][kk]=ACS[j][kk];
+//				GCS[(i-1)*cACS+j][kk]=BCS[j][kk];
+//			}
+//		}
+//	}
+//}
+//	
+//	for (i=1;i<=Np;i++)
+//	{
+//		for (j=0;j<cBP;j++)
+//		{
+//			for (kk=0;kk<lBP;kk++)
+//			{
+//				GP[(i-1)*cBP+j][kk]=BP[j][kk];
+//			}
+//		}
+//	}	
+//	for(i=0;i<lBCS*Nc;i=i+lBCS)
+//	{
+//		for(j=(i*cBCS)>>1;j<cBCS*Np;j=j+cBCS)
+//		{
+//			PhiCS[j][i]=BCS[0][0];
+//			PhiCS[j][i+1]=BCS[0][1];
+//			PhiCS[j+1][i]=BCS[1][0];
+//			PhiCS[j+1][i+1]=BCS[1][1];
+//		}
+//	}
+//	for(i=0;i<lBP*Nc;i=i+lBP)
+//	{
+//		for(j=(i*cBP)>>1;j<cBP*Np;j=j+cBP)
+//		{
+//			PhiP[j][i]=BP[0][0];
+//			PhiP[j][i+1]=BP[0][1];
+//		}
+//	}
+//	for(i=0;i<lBP*Nc;i++)
+//	{
+//		E[i][i]=1;
+//	}
+//	for(i=0;i<Nc*lBP;i=i+lBP)
+//	{
+//		deltUB[i][0]=deltPfcUpper;
+//		deltUB[i+1][0]=deltPbUpper;
+//    deltLB[i][0]=deltPfcLow;
+//		deltLB[i+1][0]=deltPbLow;
+//    UB[i][0]=PfcUpper;
+//		UB[i+1][0]=PbUpper;
+//    LB[i][0]=PfcLow;
+//		LB[i+1][0]=PbLow;
+//    U[i][0]=Pfc;
+//		U[i+1][0]=Pb;
+//	}
+//	for(i=0;i<Np*lACS;i=i+lBP)
+//	{
+//		YUB[i][0]=CH;
+//		YUB[i+1][0]=SOCH;
+//		YLB[i][0]=CL;
+//		YLB[i+1][0]=SOCL;
+//	}
+//	for(i=0;i<lBP*Nc;i=i+lBP)
+//	{
+//		for(j=(i*lBP)>>1;j<lBP*Nc;j=j+lBP)
+//		{
+//				EUU[j][i]=1;
+//				EUU[j+1][i+1]=1;
+//		}
+//	}
+//	for(i=0;i<Nc*lBP;i++)
+//	{
+//		LB_cal[i]=LB[i][0];
+//		UB_cal[i]=UB[i][0];
+//		printf("LB_cal[%d]=%0.4f    UB_cal[%d]=%0.4f\r\n",i,LB_cal[i],i,UB_cal[i]);
+//	}
+//	for(i=0;i<lBCS*Nc;i++)
+//	{
+//		LB_U[i][0]=LB[i][0]-U[i][0];
+//		UB_U[i][0]=UB[i][0]-U[i][0];
+//	}
+	
+// matrix_multiplication( cACS*Np,lACS,2, FCS, ycs, FCSycs);
+// matrix_multiplication( cBCS*Np,lBCS,2, GCS, u, GCSu);
+// matrix_a(cBCS*Np,1,YLB,FCSycs, temp, -1);
+// matrix_a(cBCS*Np,1,temp,GCSu,PhiCS_LB, -1);
+// matrix_a(cBCS*Np,1,YUB,FCSycs, temp, -1);
+// matrix_a(cBCS*Np,1,temp,GCSu,PhiCS_UB, -1);
+//	for(i=0;i<lBP*Nc*lBP*Nc;i++)
+//	{
+//		A_cal[i]=*(*EUU+i);
+//	}
+//	for(i=lBP*Nc*lBP*Nc;i<(lBP*Nc+cBCS*Np)*lBP*Nc;i++)
+//	{
+//		A_cal[i]=*(*PhiCS+i);
+//	}
+//	for(i=0;i<lBP*Nc;i++)
+//	{
+//		lbA_cal[i]=LB_U[i][0];
+//		ubA_cal[i]=UB_U[i][0];
+//	}
+//		for(i=lBP*Nc;i<lBP*Nc+cBCS*Np;i++)
+//	{
+//		lbA_cal[i]=PhiCS_LB[i][0];
+//		ubA_cal[i]=PhiCS_UB[i][0];
+//	}
+//matrix_t(cBCS*Np,lBCS*Nc,PhiCS,PhiCS_T);
+//matrix_t(cBP*Np,lBP*Nc,PhiP,PhiP_T);
+//	 matrix_multiplication(lBCS*Nc,cBCS*Np,2*Np,PhiCS_T,W2,temp2);
+//	 matrix_multiplication(lBCS*Nc,2*Np,lBCS*Nc,temp2,PhiCS,H1);
+//	matrix_multiplication(lBP*Nc,cBP*Np,Np,PhiP_T,W3,temp2);
+//	 matrix_multiplication(lBP*Nc,Np,lBP*Nc,temp2,PhiP,H2);
+//	matrix_a(lBP*Nc,lBP*Nc,H1,H2,H,1);
+//	matrix_a(lBP*Nc,lBP*Nc,H,W4,H,1);
+//	for(i=0;i<lBP*Nc*lBP*Nc;i++)
+//	{
+//		H_cal[i]=*(*H+i);
+//	}
+//	matrix_t(cYCS*Np,1,Ec,Ec_T);
+//	matrix_multiplication(lBCS*Nc,cBCS*Np,1,PhiCS_T,Ec_T,f);
+//	matrix_multiplication(lBCS*Nc,cBCS*Np,2*Np,PhiCS_T,W2,temp3);
+//	matrix_multiplication(lBCS*Nc,2*Np,1,temp3,FCSycs,f1);
+//	matrix_a(lBCS*Nc,1,f,f1,f,1);
+//	matrix_multiplication(lBCS*Nc,cBCS*Np,2*Np,PhiCS_T,W2,temp3);
+//	matrix_multiplication(lBCS*Nc,2*Np,1,temp3,GCSu,f1);
+//	matrix_a(lBCS*Nc,1,f,f1,f,1);
+//	matrix_multiplication(lBCS*Nc,cBCS*Np,2*Np,PhiCS_T,W2,temp3);
+//	matrix_multiplication(lBCS*Nc,2*Np,1,temp3,SOCR,f1);
+//	matrix_a(lBCS*Nc,1,f,f1,f,-1);
+//	
+//	matrix_multiplication(cBP*Np,lBP,1,GP,u,GPu);
+//  matrix_multiplication(lBP*Nc,cBP*Np,Np,PhiP_T,W3,temp3);
+//	matrix_multiplication(lBP*Nc,Np,1,temp3,GPu,f1);
+//	matrix_a(lBCS*Nc,1,f,f1,f,1);
+//	matrix_multiplication(lBP*Nc,cBP*Np,Np,PhiP_T,W3,temp3);
+//	matrix_multiplication(lBP*Nc,Np,1,temp3,PR,f1);
+//	matrix_a(lBCS*Nc,1,f,f1,f,1);
+//	for(i=0;i<lBP*Nc;i++)
+//	{
+//		f_cal[i]=f[i][0];
+//		printf("f_cal[%d]=%0.2f\r\n",i,f_cal[i]);
+//	}
+	
+	
+//	printf("EUU \r\n");
+
+//	for(i=0;i<lBCS*Nc;i++)
+//	{
+//		for(j=0;j<lBCS*Nc;j++)
+//		{
+//			printf("%0.2f ",EUU[i][j]);
+//		}
+//		printf("\r\n");
+//	}
+	
+	
+	
+//	printf("W2\r\n");
+//	for(i=0;i<cYCS*Np;i++)
+//	{for(j=0;j<cYCS*Np;j++)
+//		
+//	{printf(" %0.4f",W2[i][j]);}
+//	printf("\r\n");
+//	}
+//	printf("SOCR   Ec\r\n");
+//	for(i=0;i<cYCS*Np;i++)
+//	{
+//		printf(" %0.4f   %0.4f\r\n",SOCR[i][0],Ec[0][i]);
+//	}
+//		printf("PR\r\n");
+//	for(i=0;i<Np;i++)
+//	{
+//		printf(" %0.4f\r\n",PR[i][0]);
+//	}
+//	printf("FCS\r\n");
+//	for(i=0;i<cACS*Np;i++)
+//	{
+//		for(j=0;j<lACS;j++)
+//		{
+//			printf(" %0.4f",FCS[i][j]);
+//		}
+//		printf("\r\n");
+//	}
+//		printf("GCS\r\n");
+//	for(i=0;i<cBCS*Np;i++)
+//	{
+//		for(j=0;j<lBCS;j++)
+//		{
+//			printf(" %0.16f",GCS[i][j]);
+//		}
+//		printf("\r\n");
+//	}
+//	printf("GP\r\n");
+//	for(i=0;i<cBP*Np;i++)
+//	{
+//		for(j=0;j<lBP;j++)
+//		{
+//			printf(" %0.4f",GP[i][j]);
+//		}
+//		printf("\r\n");
+//	}
+//	printf("PhiCS\r\n");
+//	for(i=0;i<cBCS*Np;i++)
+//	{
+//		for(j=0;j<lBCS*Nc;j++)
+//		{
+//			printf(" %0.4f",PhiCS[i][j]);
+//		}
+//		printf("\r\n");
+//	}
+//	printf("PhiP\r\n");
+//	for(i=0;i<cBP*Np;i++)
+//	{
+//		for(j=0;j<lBP*Nc;j++)
+//		{
+//			printf(" %0.4f",PhiP[i][j]);
+//		}
+//		printf("\r\n");
+//	}	
+//	printf("E\r\n");
+//	for(i=0;i<lBP*Nc;i++)
+//	{
+//		for(j=0;j<lBP*Nc;j++)
+//		{ 
+//		printf(" %0.2f",E[i][j]);
+//		}
+//		printf("\r\n");
+//	}
+//	printf("deltUB   deltLB    UB    LB    U\r\n");
+//	for(i=0;i<lBP*Nc;i++)
+//	{
+//		printf(" %0.2f  %0.2f  %0.2f  %0.2f  %0.2f  \r\n",deltUB[i][0],deltLB[i][0],UB[i][0],LB[i][0],U[i][0]);
+//	}
+//	printf("YUB  YLB  \r\n");
+//	for(i=0;i<lACS*Np;i++)
+//	{
+//		printf("%0.2f   %0.2f\r\n",YUB[i][0],YLB[i][0]);
+//	}
+
+    while(1)
+    {
+			LED1_Toggle;
+			printf("***********************\r\n");
+			delay_ms(500);
+//USING_NAMESPACE_QPOASES
+
+	
+//	QProblemCON( &example,2,1,HST_UNKNOWN );
+//	Options_setToDefault( &options );
+//	QProblem_setOptions( &example,options );
+
+//	/* Solve QP. */
+//	nWSR = 10;
+//	QProblem_init( &example,H,g,A,lb,ub,lbA,ubA, &nWSR,0 );
+
+//	/* Get and print solution of first QP. */	
+//	QProblem_getPrimalSolution( &example,xOpt );
+//			printf("x[0]=%0.2f,X[1]=%0.2f \r\n",xOpt[0],xOpt[1]);
+
+//        delay_ms(500);                               
+    }
+}
+
+
+
+

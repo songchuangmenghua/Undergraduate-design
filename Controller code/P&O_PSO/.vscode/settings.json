@@ -1,0 +1,13 @@
+{
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBackground": "#1073cf2d",
+        "editor.lineHighlightBorder": "#9fced11f",
+        "activityBar.background": "#18340E",
+        "titleBar.activeBackground": "#214914",
+        "titleBar.activeForeground": "#F7FCF5"
+    },
+    "files.associations": {
+        "*.m": "matlab",
+        "dac.h": "c"
+    }
+}
